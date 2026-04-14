@@ -1,8 +1,14 @@
 const REDDIT_BASE_URL = 'https://www.reddit.com';
-const CORS_PROXIES = [
-  (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-];
+
+// Set your Cloudflare Worker URL here after deploying
+const WORKER_URL = import.meta.env.VITE_WORKER_URL || '';
+
+const CORS_PROXIES = WORKER_URL 
+  ? [(url) => `${WORKER_URL}?url=${encodeURIComponent(url)}`]
+  : [
+      (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+      (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    ];
 let currentProxyIndex = 0;
 
 const REQUEST_DELAY = 1500;
