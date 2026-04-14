@@ -1,4 +1,4 @@
-import { extractUsername, fetchUserActivity, fetchUserAbout } from './redditFetcher';
+import { extractUsername, fetchUserActivity, fetchUserAbout, fetchUserTrophies, fetchModeratedSubreddits } from './redditFetcher';
 import { analyzeActivity } from './analyzer';
 
 export async function analyzeProfile(profileUrl, onProgress = null) {
@@ -8,9 +8,11 @@ export async function analyzeProfile(profileUrl, onProgress = null) {
     throw new Error('Invalid Reddit profile URL. Please provide a valid URL like reddit.com/user/username');
   }
 
-  const [activityResult, userAbout] = await Promise.all([
+  const [activityResult, userAbout, trophies, moderatedSubreddits] = await Promise.all([
     fetchUserActivity(username, 10, onProgress),
-    fetchUserAbout(username)
+    fetchUserAbout(username),
+    fetchUserTrophies(username),
+    fetchModeratedSubreddits(username)
   ]);
 
   const { posts, comments } = activityResult;
@@ -24,6 +26,8 @@ export async function analyzeProfile(profileUrl, onProgress = null) {
   return {
     username,
     userAbout,
+    trophies,
+    moderatedSubreddits,
     ...analysis
   };
 }

@@ -195,21 +195,79 @@ export async function fetchUserAbout(username) {
   try {
     const data = await fetchWithRetry(url);
     const user = data?.data || {};
+    const sub = user.subreddit || {};
     return {
+      id: user.id || null,
       name: user.name,
       created_utc: user.created_utc,
       link_karma: user.link_karma || 0,
       comment_karma: user.comment_karma || 0,
-      total_karma: (user.link_karma || 0) + (user.comment_karma || 0),
+      awardee_karma: user.awardee_karma || 0,
+      awarder_karma: user.awarder_karma || 0,
+      total_karma: user.total_karma || 0,
       is_gold: user.is_gold || false,
       is_mod: user.is_mod || false,
+      is_employee: user.is_employee || false,
+      is_suspended: user.is_suspended || false,
       verified: user.verified || false,
       has_verified_email: user.has_verified_email || false,
+      accept_chats: user.accept_chats ?? null,
+      accept_pms: user.accept_pms ?? null,
+      hide_from_robots: user.hide_from_robots || false,
       icon_img: user.icon_img || null,
-      snoovatar_img: user.snoovatar_img || null
+      snoovatar_img: user.snoovatar_img || null,
+      banner_img: sub.banner_img || null,
+      description: sub.public_description || null,
+      title: sub.title || null,
+      display_name_prefixed: sub.display_name_prefixed || null,
+      subscribers: sub.subscribers ?? null,
+      profile_over_18: sub.over_18 || false,
+      previous_names: sub.previous_names || [],
+      is_default_icon: sub.is_default_icon ?? null,
+      is_default_banner: sub.is_default_banner ?? null,
+      primary_color: sub.primary_color || null,
+      key_color: sub.key_color || null,
+      icon_color: sub.icon_color || null,
     };
   } catch (err) {
     console.error('Error fetching user about:', err.message);
     return null;
+  }
+}
+
+export async function fetchUserTrophies(username) {
+  const url = `${REDDIT_BASE_URL}/api/v1/user/${username}/trophies.json?raw_json=1`;
+  try {
+    const data = await fetchWithRetry(url);
+    const trophies = data?.data?.trophies || [];
+    return trophies.map(t => ({
+      name: t.data?.name || 'Unknown',
+      description: t.data?.description || null,
+      icon_70: t.data?.icon_70 || null,
+      granted_at: t.data?.granted_at || null,
+    }));
+  } catch (err) {
+    console.error('Error fetching trophies:', err.message);
+    return [];
+  }
+}
+
+export async function fetchModeratedSubreddits(username) {
+  const url = `${REDDIT_BASE_URL}/user/${username}/moderated_subreddits.json?raw_json=1`;
+  try {
+    const data = await fetchWithRetry(url);
+    const subs = data?.data || [];
+    return subs.map(s => ({
+      name: s.display_name || s.sr || 'Unknown',
+      display_name_prefixed: s.display_name_prefixed || null,
+      subscribers: s.subscribers ?? 0,
+      icon_img: s.icon_img || null,
+      url: s.url || null,
+      over_18: s.over_18 || false,
+      subreddit_type: s.subreddit_type || 'public',
+    }));
+  } catch (err) {
+    console.error('Error fetching moderated subreddits:', err.message);
+    return [];
   }
 }

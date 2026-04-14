@@ -89,7 +89,11 @@ export default function App() {
             </div>
 
             {data.userAbout && (
-              <AccountInfoCard userAbout={data.userAbout} />
+              <AccountInfoCard
+                userAbout={data.userAbout}
+                trophies={data.trophies}
+                moderatedSubreddits={data.moderatedSubreddits}
+              />
             )}
 
             <StatsCard data={data} />
