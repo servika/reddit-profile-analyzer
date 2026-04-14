@@ -2,6 +2,8 @@
 
 A client-side web application that analyzes Reddit user activity patterns. Enter any public Reddit username to see detailed statistics about their posting behavior.
 
+**[Live Demo](https://servika.github.io/reddit-profile-analyzer/)**
+
 ![Reddit Analyzer Screenshot](https://img.shields.io/badge/React-18-blue) ![Vite](https://img.shields.io/badge/Vite-5-purple) ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Features
