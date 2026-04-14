@@ -139,6 +139,9 @@ export default function App() {
 
       <footer className="mt-auto py-6 text-center text-sm text-gray-500">
         <p>Reddit Analyzer - Comprehensive analysis of public Reddit user activity</p>
+        <p className="text-xs text-gray-400 mt-1">
+          Build: {new Date(__BUILD_TIME__).toLocaleString()}
+        </p>
       </footer>
     </div>
   );
